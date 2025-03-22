@@ -101,7 +101,9 @@ def create_detailed_embed(game_data, basic_game_info):
         embed.set_image(url=game_data['header_image'])
 
     # Add a centered divider
-    embed.add_field(name="⎯⎯⎯⎯⎯ 𝐆𝐀𝐌𝐄 𝐈𝐍𝐅𝐎 ⎯⎯⎯⎯⎯", value="", inline=False)
+    embed.add_field(name="", value="", inline=True)
+    embed.add_field(name="__𝐆𝐀𝐌𝐄 𝐈𝐍𝐅𝐎__", value="", inline=True)
+    embed.add_field(name="", value="", inline=True)
 
     # Basic info with emojis
     release_date = game_data.get('release_date', {}).get('date', 'Unknown')
@@ -157,7 +159,9 @@ def create_detailed_embed(game_data, basic_game_info):
     )
     
     # Add another centered divider
-    embed.add_field(name="⎯⎯⎯⎯⎯ 𝐃𝐄𝐓𝐀𝐈𝐋𝐒 ⎯⎯⎯⎯⎯", value="", inline=False)
+    embed.add_field(name="", value="", inline=True)
+    embed.add_field(name="__𝐃𝐄𝐓𝐀𝐈𝐋𝐒__", value="", inline=True)
+    embed.add_field(name="", value="", inline=True)
 
     # Categories with special formatting
     categories = [cat.get('description', '') for cat in game_data.get('categories', [])[:6]]
