@@ -10,7 +10,7 @@ async def search_steam_games(query):
     params = {
         "term": query,
         "l": "english",
-        "cc": "US"
+        "cc": "ID"
     }
 
     try:
@@ -36,7 +36,7 @@ async def get_steam_game_details(app_id):
     """
     params = {
         "appids": app_id,
-        "cc": "US",
+        "cc": "ID",
         "l": "english"
     }
 

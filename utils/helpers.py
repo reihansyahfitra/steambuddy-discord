@@ -20,10 +20,10 @@ def sanitize_html(html_text):
 def format_price(price_in_cents):
     """Format price from cents to dollars with proper formatting."""
     if price_in_cents == 0:
-        return "Free"
+        return "Free to Play"
     
-    dollars = price_in_cents / 100
-    return f"${dollars:.2f}"
+    price = price_in_cents / 100
+    return f"${price:.2f}"
 
 def truncate_text(text, max_length=200, add_ellipsis=True):
     """Truncate text to a maximum length."""

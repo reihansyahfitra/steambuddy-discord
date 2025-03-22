@@ -1,5 +1,8 @@
 import discord
+import requests
+from bs4 import BeautifulSoup4
 from config.settings import STEAMDB_CHARTS_URL
+from utils.helper import format_price, truncate_text
 
 def format_game_results(games):
     """
@@ -22,6 +25,8 @@ def format_game_results(games):
     )
 
     for i, game in enumerate(games, 1):
+
+
         name = game.get('name', 'N/A')
         price = game.get('price', {})
 
