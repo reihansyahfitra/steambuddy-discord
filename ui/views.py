@@ -16,7 +16,7 @@ class GameButtonView(View):
         for i, game in enumerate(games, 1):
             game_name = truncate_text(game.get('name', 'Game'), max_length=70, add_ellipsis=True)
             button = Button(
-                label=f"Info: {game_name}",
+                label=f"Ingpo: {game_name}",
                 style=discord.ButtonStyle.primary,
                 custom_id=f"game_info_{game.get('id', '')}"
             )
