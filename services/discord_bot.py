@@ -66,6 +66,8 @@ async def on_message(message):
 
         # Indicate that the bot is typing while processing
         async with message.channel.typing():
+
+            
             await message.channel.send(f"Cooking: **{query}**...")
             
             # Search for games

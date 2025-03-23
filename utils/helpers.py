@@ -1,4 +1,6 @@
 import re
+from config.settings import CURRENCY_SYMBOLS
+from utils.user_prefs import get_user_currency
 
 def sanitize_html(html_text):
     """Remove HTML tags from text."""
@@ -21,9 +23,21 @@ def format_price(price_in_cents):
     """Format price from cents to dollars with proper formatting."""
     if price_in_cents == 0:
         return "Free to Play"
+
+    currency_code = get_user_currency(user_id)
+
+    symbol = CURRENCY_SYMBOLS.get(currency_code, "$")
     
     price = price_in_cents / 100
-    return f"${price:.2f}"
+
+    if currency_code in ["JP", "KR", "VN", "ID"]:
+        price_formatted = f"{symbol}{int(price):,}"
+        if currency_code == "ID":
+            price_formatted = price_formatted.replace(",", ".")
+        else:
+            price_formatted = f"{symbol}{price:.2f}"
+
+    return price_formatted
 
 def truncate_text(text, max_length=200, add_ellipsis=True):
     """Truncate text to a maximum length."""

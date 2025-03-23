@@ -31,7 +31,7 @@ async def search_steam_games(query, user_id=None):
         print(f"Error searching Steam: {e}")
         return []
 
-async def get_steam_game_details(app_id):
+async def get_steam_game_details(app_id, user_id=None):
     """
     Fetch detailed information about a specific game by its Steam App ID.
     """

@@ -1,7 +1,8 @@
 import discord
 import requests
-from config.settings import STEAMDB_CHARTS_URL, SUPPORTED_CURRENCIES
+from config.settings import STEAMDB_CHARTS_URL, SUPPORTED_CURRENCIES, CURRENCY_SYMBOLS
 from utils.helpers import format_price, truncate_text
+from utils.user_prefs import get_user_currency
 
 def create_currency_embed():
     embed = discord.Embed(
@@ -29,7 +30,7 @@ def create_currency_embed():
 
     return embed
 
-def format_game_results(games):
+def format_game_results(games, user_id=None):
     """
     Format search results into a Discord embed with game information.
     Returns both the embed and a view with interactive buttons.
@@ -42,29 +43,31 @@ def format_game_results(games):
             description="Gaada game yang ketemu",
             color=discord.Color.red()
         ), None
+
+    currency_code = get_user_currency(user_id)
+    currency_name = SUPPORTED_CURRENCIES.get(currency_code, "")
     
     embed = discord.Embed(
         title="Top 5 Game",
-        description="5 game paling gacor di Steam",
+        description="5 game paling gacor di Steam (Negara: {currency_name})",
         color=discord.Color.green()
     )
 
     for i, game in enumerate(games, 1):
-
-
         name = game.get('name', 'N/A')
         price = game.get('price', {})
 
         if price.get('final', 0) == 0:
             price_str = "GRATIS COY!"
         else:
-            final_price = price.get('final', 0) / 100
-            price_str = f"Rp {final_price:.2f}"
+            final_price = price.get('final', 0)
+            price_str = format_price(final_price, user_id)
 
             if price.get('discount_percent', 0) > 0:
                 original_price = price.get('initial', 0) / 100
                 discount = price.get('discount_percent', 0)
-                price_str = f"~~${original_price:.2f}~~ ${final_price:.2f} ({discount}% off)"
+                original_price_str = format_price(original_price, user_id)
+                price_str = f"~~{original_price_str}~~ {price_str} ({discount}% off)"
         
         store_url = f"https://store.steampowered.com/app/{game.get('id', '')}"
 
@@ -84,7 +87,7 @@ def format_game_results(games):
     
     return embed, view
 
-def create_detailed_embed(game_data, basic_game_info):
+def create_detailed_embed(game_data, basic_game_info, user_id=None):
     """
     Create a detailed embed for a single game with rich formatting and information.
     """
@@ -94,6 +97,8 @@ def create_detailed_embed(game_data, basic_game_info):
             description="Game yang dicari gaada",
             color=discord.Color.red()
         )
+
+    currency_code = get_user_currency(user_id)
 
     # Determine embed color based on metacritic score or use a gradient
     if 'metacritic' in game_data and game_data['metacritic'].get('score'):
@@ -140,15 +145,19 @@ def create_detailed_embed(game_data, basic_game_info):
         if price_info.get('final', 0) == 0:
             price_str = "**GRATIS COY!**"
         else:
-            final_price = price_info.get('final_formatted', f"${price_info.get('final', 0)/100:.2f}")
-            price_str = f"**{final_price}**"
+           final_price_cents = price_info.get('final', 0)
+            formatted_price = format_price(final_price_cents, user_id)
+            price_str = f"**{formatted_price}**"
             
             if price_info.get('discount_percent', 0) > 0:
-                initial_price = price_info.get('initial_formatted', f"${price_info.get('initial', 0)/100:.2f}")
+                initial_price_cents = price_info.get('initial', 0)
+                formatted_original = format_price(initial_price_cents, user_id)
+                
                 discount = price_info.get('discount_percent', 0)
-                price_str = f"~~{initial_price}~~ **{final_price}** 🔥 **{discount}% OFF!**"
+                price_str = f"~~{formatted_original}~~ **{formatted_price}** 🔥 **{discount}% OFF!**"
     else:
-        price_str = "Rp 💀"
+        symbol = CURRENCY_SYMBOLS.get(currency_code, "$")
+        price_str = f"{symbol} 💀"
     
     embed.add_field(name="💰 Harga", value=price_str, inline=True)
 
