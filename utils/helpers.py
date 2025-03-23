@@ -34,8 +34,8 @@ def format_price(price_in_cents, user_id=None):
         price_formatted = f"{symbol}{int(price):,}"
         if currency_code == "ID":
             price_formatted = price_formatted.replace(",", ".")
-        else:
-            price_formatted = f"{symbol}{price:.2f}"
+    else:
+        price_formatted = f"{symbol}{price:.2f}"
 
     return price_formatted
 
