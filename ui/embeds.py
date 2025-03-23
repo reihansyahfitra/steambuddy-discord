@@ -1,8 +1,7 @@
 import discord
 import requests
-from bs4 import BeautifulSoup4
 from config.settings import STEAMDB_CHARTS_URL
-from utils.helper import format_price, truncate_text
+from utils.helpers import format_price, truncate_text
 
 def format_game_results(games):
     """
@@ -34,7 +33,7 @@ def format_game_results(games):
             price_str = "Free to Play"
         else:
             final_price = price.get('final', 0) / 100
-            price_str = f"${final_price:.2f}"
+            price_str = f"Rp {final_price:.2f}"
 
             if price.get('discount_percent', 0) > 0:
                 original_price = price.get('initial', 0) / 100
