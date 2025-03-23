@@ -5,7 +5,7 @@ from ui.embeds import format_game_results, create_currency_embed
 from utils.user_prefs import set_user_currency, get_user_currency, format_expiry_time, clean_expired_preferences
 from config.settings import COMMAND_PREFIX, CURRENCY_PREFIX, SUPPORTED_CURRENCIES
 
-# Set up Discord intents
+# Menyiapkan intents Discord
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
@@ -14,24 +14,25 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-    """Called when the bot is ready and connected to Discord."""
-    print(f'We have logged in as {client.user}')
-    print(f'Bot is ready to receive {COMMAND_PREFIX} commands!')
+    """Dipanggil ketika bot siap dan terhubung ke Discord."""
+    print(f'Berhasil login sebagai {client.user}')
+    print(f'Bot siap menerima perintah {COMMAND_PREFIX}')
 
     client.loop.create_task(periodic_cleanup())
 
 async def periodic_cleanup():
+    """Membersihkan preferensi pengguna yang kedaluwarsa secara berkala."""
     await client.wait_until_ready()
     while not client.is_closed():
         cleaned = clean_expired_preferences()
         if cleaned > 0:
-            print(f"Cleaned up {cleaned} expired user preferences")
-        await asyncio.sleep(300)
+            print(f"Membersihkan {cleaned} preferensi pengguna yang kedaluwarsa")
+        await asyncio.sleep(300)  # Berjalan setiap 5 menit
 
 @client.event
 async def on_message(message):
-    """Handle incoming messages and respond to commands."""
-    # Ignore messages from the bot itself
+    """Menangani pesan masuk dan merespons perintah."""
+    # Mengabaikan pesan dari bot sendiri
     if message.author == client.user:
         return
 
@@ -49,31 +50,35 @@ async def on_message(message):
             if currency_code in SUPPORTED_CURRENCIES:
                 set_user_currency(message.author.id, currency_code)
                 expiry_time = format_expiry_time(message.author.id)
-                await message.channel.send(f"Anda telah pindah negara ke: {currency_code}")
+                currency_name = SUPPORTED_CURRENCIES.get(currency_code, "")
+                await message.channel.send(f"✅ Mata uang diubah ke: **{currency_code}** ({currency_name})\nPengaturan akan berlaku hingga **{expiry_time}**")
             else:
                 await message.channel.send(
-                    f"❌ NEGARA MANA ITU COK!. Coba pake `{CURRENCY_PREFIX}` buat ngeliat kode-kode nya."
+                    f"❌ Kode negara tidak valid. Gunakan `{CURRENCY_PREFIX}` untuk melihat daftar kode negara yang tersedia."
                 )
+            return
 
-    # Process search command
+    # Memproses perintah pencarian
     if message.content.startswith(COMMAND_PREFIX):
-        # Extract query from message
+        # Mengekstrak query dari pesan
         query = message.content[len(COMMAND_PREFIX):].strip()
 
         if not query:
-            await message.channel.send(f"Tolol. Cara makenya: `{COMMAND_PREFIX} Portal`")
+            await message.channel.send(f"Masukkan nama game yang ingin dicari. Contoh: `{COMMAND_PREFIX} Portal`")
             return
 
-        # Indicate that the bot is typing while processing
+        # Menunjukkan bahwa bot sedang mengetik saat memproses
         async with message.channel.typing():
-
+            # Mendapatkan mata uang pengguna saat ini
+            currency_code = get_user_currency(message.author.id)
+            currency_name = SUPPORTED_CURRENCIES.get(currency_code, "")
             
-            await message.channel.send(f"Cooking: **{query}**...")
+            await message.channel.send(f"Mencari: **{query}** (Mata uang: {currency_code} - {currency_name})...")
             
-            # Search for games
+            # Mencari game
             games = await search_steam_games(query, message.author.id)
             
-            # Format and send results
+            # Format dan kirim hasil
             embed, view = format_game_results(games, message.author.id)
             
             if games:
@@ -82,5 +87,5 @@ async def on_message(message):
                 await message.channel.send(embed=embed)
 
 def start_bot(token):
-    """Start the Discord bot with the provided token."""
+    """Memulai bot Discord dengan token yang diberikan."""
     client.run(token)

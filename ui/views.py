@@ -6,17 +6,17 @@ from utils.helpers import truncate_text
 
 class GameButtonView(View):
     """
-    Creates interactive buttons for each game in search results.
-    Each button shows detailed information about its game when clicked.
+    Membuat tombol interaktif untuk setiap game dalam hasil pencarian.
+    Setiap tombol menampilkan informasi detail tentang game saat diklik.
     """
     def __init__(self, games):
-        super().__init__(timeout=120)  # Buttons expire after 2 minutes
+        super().__init__(timeout=120)  # Tombol kedaluwarsa setelah 2 menit
         
-        # Add a button for each game
+        # Menambahkan tombol untuk setiap game
         for i, game in enumerate(games, 1):
             game_name = truncate_text(game.get('name', 'Game'), max_length=70, add_ellipsis=True)
             button = Button(
-                label=f"Ingpo: {game_name}",
+                label=f"Info: {game_name}",
                 style=discord.ButtonStyle.primary,
                 custom_id=f"game_info_{game.get('id', '')}"
             )
@@ -24,23 +24,23 @@ class GameButtonView(View):
             self.add_item(button)
     
     def create_button_callback(self, game):
-        """Creates a callback function for each button."""
+        """Membuat fungsi callback untuk setiap tombol."""
         async def button_callback(interaction):
-            # Let the user know we're processing
+            # Memberi tahu pengguna bahwa kita sedang memproses
             await interaction.response.defer(ephemeral=True)
             
-            # Get game ID
+            # Mendapatkan ID game
             game_id = game.get('id', '')
             if not game_id:
-                await interaction.followup.send("Error: Could not find game ID", ephemeral=True)
+                await interaction.followup.send("Error: ID game tidak ditemukan", ephemeral=True)
                 return
 
             user_id = interaction.user.id
             
-            # Fetch detailed game info
+            # Mengambil informasi detail game
             game_details = await get_steam_game_details(game_id, user_id)
             
-            # Create and send detailed embed
+            # Membuat dan mengirim embed detail
             embed = create_detailed_embed(game_details, game, user_id)
             await interaction.followup.send(embed=embed, ephemeral=False)
         

@@ -5,12 +5,12 @@ from utils.user_prefs import get_user_currency
 
 async def search_steam_games(query, user_id=None):
     """
-    Search for games on Steam with the given query.
-    Returns the top 5 most popular games matching the query.
+    Mencari game di Steam dengan query yang diberikan.
+    Mengembalikan 5 game paling populer yang cocok dengan query.
     """
-
+    # Dapatkan mata uang pilihan pengguna
     currency_code = get_user_currency(user_id) if user_id else "ID"
-
+    
     params = {
         "term": query,
         "l": "english",
@@ -28,16 +28,16 @@ async def search_steam_games(query, user_id=None):
         else:
             return []
     except Exception as e:
-        print(f"Error searching Steam: {e}")
+        print(f"Error mencari game di Steam: {e}")
         return []
 
 async def get_steam_game_details(app_id, user_id=None):
     """
-    Fetch detailed information about a specific game by its Steam App ID.
+    Mengambil informasi detail tentang game tertentu berdasarkan ID App Steam.
     """
-
+    # Dapatkan mata uang pilihan pengguna
     currency_code = get_user_currency(user_id) if user_id else "ID"
-
+    
     params = {
         "appids": app_id,
         "cc": currency_code,
@@ -54,5 +54,5 @@ async def get_steam_game_details(app_id, user_id=None):
         else:
             return None
     except Exception as e:
-        print(f"Error fetching game details: {e}")
+        print(f"Error mengambil detail game: {e}")
         return None
