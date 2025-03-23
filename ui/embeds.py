@@ -49,7 +49,7 @@ def format_game_results(games, user_id=None):
     
     embed = discord.Embed(
         title="Top 5 Game",
-        description=f"5 game paling gacor di Steam (Negara: {currency_name})",
+        description=f"5 game paling gacor di Steam (**Mata uang**: **{currency_name})**",
         color=discord.Color.green()
     )
 
