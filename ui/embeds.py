@@ -122,7 +122,7 @@ def create_detailed_embed(game_data, basic_game_info):
                 discount = price_info.get('discount_percent', 0)
                 price_str = f"~~{initial_price}~~ **{final_price}** 🔥 **{discount}% OFF!**"
     else:
-        price_str = "💀"
+        price_str = "Rp 💀"
     
     embed.add_field(name="💰 Harga", value=price_str, inline=True)
 
@@ -142,6 +142,8 @@ def create_detailed_embed(game_data, basic_game_info):
             metacritic_value = "*0/0*"
             
         embed.add_field(name="📊 Nilai", value=metacritic_value, inline=True)
+    else:
+        embed.add_field(name="📊 Nilai", value="*0/0*", inline=True)
     
     # Player counts if available
     app_id = game_data.get('steam_appid', '')
