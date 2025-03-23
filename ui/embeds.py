@@ -64,7 +64,7 @@ def format_game_results(games, user_id=None):
             price_str = format_price(final_price, user_id)
 
             if price.get('discount_percent', 0) > 0:
-                original_price = price.get('initial', 0) / 100
+                original_price = price.get('initial', 0)
                 discount = price.get('discount_percent', 0)
                 original_price_str = format_price(original_price, user_id)
                 price_str = f"~~{original_price_str}~~ {price_str} ({discount}% off)"

@@ -74,7 +74,7 @@ async def on_message(message):
             games = await search_steam_games(query, message.author.id)
             
             # Format and send results
-            embed, view = format_game_results(games)
+            embed, view = format_game_results(games, message.author.id)
             
             if games:
                 await message.channel.send(embed=embed, view=view)

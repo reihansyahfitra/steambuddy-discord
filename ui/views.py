@@ -41,7 +41,7 @@ class GameButtonView(View):
             game_details = await get_steam_game_details(game_id, user_id)
             
             # Create and send detailed embed
-            embed = create_detailed_embed(game_details, game)
+            embed = create_detailed_embed(game_details, game, user_id)
             await interaction.followup.send(embed=embed, ephemeral=False)
         
         return button_callback
