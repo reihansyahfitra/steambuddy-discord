@@ -1,5 +1,5 @@
-from services.discord_bot import start_bot
 import os
+from services.discord_bot import start_bot
 from dotenv import load_dotenv
 
 # Load environment variables
