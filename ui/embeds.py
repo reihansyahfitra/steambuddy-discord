@@ -145,7 +145,7 @@ def create_detailed_embed(game_data, basic_game_info, user_id=None):
         if price_info.get('final', 0) == 0:
             price_str = "**GRATIS COY!**"
         else:
-           final_price_cents = price_info.get('final', 0)
+            final_price_cents = price_info.get('final', 0)
             formatted_price = format_price(final_price_cents, user_id)
             price_str = f"**{formatted_price}**"
             
