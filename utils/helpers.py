@@ -19,7 +19,7 @@ def sanitize_html(html_text):
     
     return clean_text.strip()
 
-def format_price(price_in_cents):
+def format_price(price_in_cents, user_id=None):
     """Format price from cents to dollars with proper formatting."""
     if price_in_cents == 0:
         return "Free to Play"
