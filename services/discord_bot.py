@@ -16,6 +16,16 @@ async def on_ready():
     print(f'We have logged in as {client.user}')
     print(f'Bot is ready to receive {COMMAND_PREFIX} commands!')
 
+    client.loop.create_task(periodic_cleanup())
+
+async def periodic_cleanup():
+    await client.wait_until_ready()
+    while not client.is_closed():
+        cleaned = clean_expired_preferences()
+        if cleaned > 0:
+            print(f"Cleaned up {cleaned} expired user preferences")
+        await asyncio.sleep(300)
+
 @client.event
 async def on_message(message):
     """Handle incoming messages and respond to commands."""
@@ -23,21 +33,41 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    if message.content.startswith(CURRENCY_PREFIX):
+        parts = message.content.split()
+
+        if len(parts) == 1:
+            embed = create_currency_embed()
+            await message.channel.send(embed=embed)
+            return
+
+        if len(parts) > 1:
+            currency_code = parts[1].upper()
+
+            if currency_code in SUPPORTED_CURRENCIES:
+                set_user_currency(message.author.id, currency_code)
+                expiry_time = format_expiry_time(message.author.id)
+                await message.channel.send(f"Anda telah pindah negara ke: {currency_code}")
+            else:
+                await message.channel.send(
+                    f"❌ NEGARA MANA ITU COK!. Coba pake `{CURRENCY_PREFIX}` buat ngeliat kode-kode nya."
+                )
+
     # Process search command
     if message.content.startswith(COMMAND_PREFIX):
         # Extract query from message
         query = message.content[len(COMMAND_PREFIX):].strip()
 
         if not query:
-            await message.channel.send(f"Please provide a game name to search for. Example: `{COMMAND_PREFIX} Portal`")
+            await message.channel.send(f"Tolol. Cara makenya: `{COMMAND_PREFIX} Portal`")
             return
 
         # Indicate that the bot is typing while processing
         async with message.channel.typing():
-            await message.channel.send(f"Searching for: **{query}**...")
+            await message.channel.send(f"Cooking: **{query}**...")
             
             # Search for games
-            games = await search_steam_games(query)
+            games = await search_steam_games(query, message.author.id)
             
             # Format and send results
             embed, view = format_game_results(games)

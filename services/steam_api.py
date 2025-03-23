@@ -2,24 +2,24 @@ import requests
 import json
 from config.settings import STEAM_API_KEY, STEAM_STORE_API_URL, STEAM_APP_DETAILS_URL
 
-async def search_steam_games(query):
+async def search_steam_games(query, user_id=None):
     """
     Search for games on Steam with the given query.
     Returns the top 5 most popular games matching the query.
     """
+
+    currency_code = get_user_currency(user_id) if user_id else "ID"
+
     params = {
         "term": query,
         "l": "english",
-        "cc": "ID"
+        "cc": currency_code
     }
 
     try:
         response = requests.get(STEAM_STORE_API_URL, params=params)
         response.raise_for_status()
         data = response.json()
-
-        # Debug: Print the response data
-        print(json.dumps(data, indent=4))
 
         if 'items' in data and len(data['items']) > 0:
             sorted_games = data['items']
@@ -34,9 +34,12 @@ async def get_steam_game_details(app_id):
     """
     Fetch detailed information about a specific game by its Steam App ID.
     """
+
+    currency_code = get_user_currency(user_id) if user_id else "ID"
+
     params = {
         "appids": app_id,
-        "cc": "ID",
+        "cc": currency_code,
         "l": "english"
     }
 

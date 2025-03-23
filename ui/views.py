@@ -34,9 +34,11 @@ class GameButtonView(View):
             if not game_id:
                 await interaction.followup.send("Error: Could not find game ID", ephemeral=True)
                 return
+
+            user_id = interaction.user.id
             
             # Fetch detailed game info
-            game_details = await get_steam_game_details(game_id)
+            game_details = await get_steam_game_details(game_id, user_id)
             
             # Create and send detailed embed
             embed = create_detailed_embed(game_details, game)

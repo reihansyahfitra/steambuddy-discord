@@ -3,6 +3,32 @@ import requests
 from config.settings import STEAMDB_CHARTS_URL
 from utils.helpers import format_price, truncate_text
 
+def create_currency_embed():
+    embed = discord.Embed(
+        title="Kode negara yang ada",
+        description="Gunakan `!currency [kode]` untuk mengatur mata uangmu",
+        color=discord.Color.blue()
+    )
+
+    regions = {
+        "Americas": ["US", "AR", "BR", "CA", "CL", "CO", "CR", "MX", "PE", "UY"],
+        "Europe": ["EU", "GB", "NO", "PL", "RU", "TR", "UA"],
+        "Asia": ["CN", "HK", "ID", "IN", "JP", "KR", "KZ", "MY", "PH", "SG", "TH", "TW", "VN"],
+        "Oceania": ["AU", "NZ"],
+        "Middle East & Africa": ["IL", "QA", "SA", "AE", "ZA"]
+    }
+
+    for region, codes in regions.items():
+        currencies = []
+        for code in codes:
+            if code in SUPPORTED_CURRENCIES:
+                currencies.append(f"{code}: {SUPPORTED_CURRENCIES[code]}")
+            
+        if currencies:
+            embed.add_field(name=region, value="\n".join(currencies), inline=False)
+
+    return embed
+
 def format_game_results(games):
     """
     Format search results into a Discord embed with game information.
