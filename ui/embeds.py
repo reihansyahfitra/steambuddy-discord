@@ -1,6 +1,6 @@
 import discord
 import requests
-from config.settings import STEAMDB_CHARTS_URL
+from config.settings import STEAMDB_CHARTS_URL, SUPPORTED_CURRENCIES
 from utils.helpers import format_price, truncate_text
 
 def create_currency_embed():

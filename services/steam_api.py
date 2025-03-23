@@ -1,6 +1,7 @@
 import requests
 import json
 from config.settings import STEAM_API_KEY, STEAM_STORE_API_URL, STEAM_APP_DETAILS_URL
+from utils.user_prefs import get_user_currency
 
 async def search_steam_games(query, user_id=None):
     """
