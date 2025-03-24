@@ -1,6 +1,6 @@
 # SteamBuddy Discord Bot
 
-SteamBuddy is a Discord bot that helps you easily gets Steam games details.
+SteamBuddy lets you quickly look up Steam game information without leaving Discord.
 
 ## Features (for now)
 
